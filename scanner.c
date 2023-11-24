@@ -24,7 +24,7 @@ typedef struct scanner
 scanner *punt;
 int counter = 0;
 int fd; 
-char *argumentos[5];
+char *arguments[5];
 
 int dirmask(char *dir, char *mask, int** dirr, int** maskr){
     int i;
@@ -61,13 +61,13 @@ void generateR(int *direc, int *masc, int indice, int cursor){
         if(checkDir(direc, masc)){
             punt[counter].dir = (char*)malloc(20);
             sprintf(punt[counter].dir, "%d.%d.%d.%d", direc[0], direc[1], direc[2], direc[3]);
-            argumentos[3] = punt[counter].dir;
+            arguments[3] = punt[counter].dir;
             punt[counter].pid = fork();
             switch (punt[counter].pid)
             {
             case 0:
                 dup2(fd, 1);
-                execvp(argumentos[0], argumentos);
+                execvp(arguments[0], arguments);
                 break;
             default:
                 counter++;
@@ -108,10 +108,10 @@ int main(int argc, char **argv)
     int status, count = 0;
     int *direc, *masc, length;
 
-    argumentos[0] = "ping";
-    argumentos[1] = "-c";
-    argumentos[2] = "4";
-    argumentos[4] = NULL;
+    arguments[0] = "ping";
+    arguments[1] = "-c";
+    arguments[2] = "4";
+    arguments[4] = NULL;
 
     if(argc != 3){
         fprintf(stderr, "The program needs to be given two arguments\n");
@@ -129,11 +129,11 @@ int main(int argc, char **argv)
     {
         waitpid(punt[i].pid, &status, 0);
         if (WEXITSTATUS(status) == 0){
-            printf("El host %s esta activo\n", punt[i].dir);
+            printf("Host %s is up\n", punt[i].dir);
             free(punt[i].dir);
             count++;
         }
     }
-    printf("Hay un total de %d dispositivos conectados\n", count);
+    printf("There are %d devices connected\n", count);
     return 0;
 }
